@@ -1,277 +1,367 @@
 /* frontend/src/App.css */
 
-/* Genel reset ve tema */
+/* --- DARK MODERN TEMA DEĞİŞKENLERİ --- */
 :root {
-  --primary: #2563eb;
-  --secondary: #64748b;
-  --success: #16a34a;
-  --warning: #f59e0b;
-  --danger: #dc2626;
-  --bg: #f8fafc;
-  --card-bg: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --radius: 12px;
+  --primary: #6366f1;       /* İndigo - Ana renk */
+  --primary-hover: #4f46e5;
+  --secondary: #475569;     /* Slate - İkincil */
+  --success: #10b981;       /* Zümrüt Yeşili - Gönder/Başarılı */
+  --warning: #f59e0b;       /* Amber - Şifre Çöz/Uyarı */
+  --danger: #ef4444;        /* Kırmızı - Çıkış */
+
+  --bg: #0f172a;            /* Çok koyu lacivert (Arka plan) */
+  --card-bg: #1e293b;       /* Koyu gri-mavi (Kartlar) */
+  --input-bg: #020617;      /* Simsiyah (Inputlar) */
+  --border: #334155;        /* Çerçeveler */
+
+  --text: #f8fafc;          /* Neredeyse beyaz metin */
+  --text-muted: #94a3b8;    /* Sönük metin */
+
+  --radius: 16px;           /* Daha yuvarlak köşeler */
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); /* Derin gölge */
+  --glow: 0 0 20px rgba(99, 102, 241, 0.15); /* Hafif neon parlama */
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  background: linear-gradient(135deg, #eef2ff, #f8fafc);
-  color: var(--text);
+/* Scrollbar Tasarımı (Modern) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
-/* LOGIN */
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  /* Arka plana hafif bir degrade ekleyelim */
+  background-image: radial-gradient(circle at top right, #1e1b4b, transparent 40%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* LOGIN EKRANI */
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .login-box {
-  width: 320px;
+  width: 360px;
   background: var(--card-bg);
-  padding: 32px;
+  padding: 40px;
   border-radius: var(--radius);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  /* Hafif parlama efekti */
+  position: relative;
+  overflow: hidden;
+}
+
+.login-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--success));
 }
 
 .login-container input {
-  padding: 12px 14px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  background: var(--input-bg);
+  color: var(--text);
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
+
 .login-container input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
 }
 
 .login-buttons {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
-/* BUTTONS */
+/* GENEL BUTONLAR */
 button {
   font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
   flex: 1;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), #4338ca);
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
-  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
 .btn-primary:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
 .btn-secondary {
   flex: 1;
-  background: var(--secondary);
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.15s;
 }
 .btn-secondary:hover {
-  background: #475569;
-}
-
-.logout-btn {
-  background: var(--danger);
+  background: var(--secondary);
   color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-}
-.logout-btn:hover {
-  background: #b91c1c;
+  border-color: var(--secondary);
 }
 
 /* APP LAYOUT */
 .app-container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
 }
 
+/* HEADER (Glassmorphism) */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
+  padding: 20px 32px;
+  background: rgba(30, 41, 59, 0.7); /* Şeffaf koyu zemin */
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   border-radius: 0 0 var(--radius) var(--radius);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
+.header h2 {
+  margin: 0;
+  background: linear-gradient(to right, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.logout-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* ANA İÇERİK */
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  padding: 0 20px;
+  gap: 32px;
+  padding: 0 24px;
 }
 
-/* CARD */
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* KARTLAR */
 .card {
   background: var(--card-bg);
-  padding: 24px;
+  padding: 30px;
   border-radius: var(--radius);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* FORMS */
+/* FORMLAR */
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .form-group label {
   display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text);
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 14px;
   outline: none;
+  font-family: 'Consolas', 'Monaco', monospace; /* Kod havası verir */
 }
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 
-/* PARAMS */
+/* PARAMETRELER ALANI */
 .params-area {
-  background: #f1f5f9;
-  padding: 12px;
-  margin-bottom: 16px;
-  border-radius: 8px;
+  background: #0f172a;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* SEND BUTTON */
+/* GÖNDER BUTONU */
 .send-btn {
   width: 100%;
-  padding: 14px;
-  background: var(--success);
+  padding: 16px;
+  background: linear-gradient(to right, var(--success), #059669);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 16px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
 }
 .send-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
 }
 
-/* MESSAGES */
+/* MESAJ LİSTESİ */
 .messages-list {
-  max-height: 500px;
+  max-height: 550px;
   overflow-y: auto;
-  padding-right: 6px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .message-item {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 0;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  transition: transform 0.2s;
+}
+.message-item:hover {
+  transform: translateX(4px);
+  border-color: var(--secondary);
 }
 
 .msg-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 12px;
   font-size: 13px;
 }
 
 .sender-badge {
-  background: var(--primary);
-  color: white;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 600;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .method-badge {
-  background: var(--secondary);
-  color: white;
-  padding: 3px 8px;
+  background: var(--input-bg);
+  color: var(--text-muted);
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 12px;
+  border: 1px solid var(--border);
+  font-family: monospace;
 }
 
 .time {
-  color: var(--muted);
+  color: var(--secondary);
+  font-size: 12px;
   margin-left: auto;
 }
 
-/* MESSAGE CONTENT */
+/* MESAJ İÇERİĞİ */
 .msg-content {
-  padding: 12px;
+  padding: 14px;
   border-radius: 8px;
   word-break: break-word;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
+  line-height: 1.5;
 }
 
+/* Şifreli Mesaj */
 .encrypted {
-  background: #fffbeb;
-  color: #92400e;
-  font-family: ui-monospace, monospace;
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border-left: 3px solid var(--warning);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
 }
 
+/* Çözülmüş Mesaj */
 .decrypted {
-  background: #ecfdf5;
-  color: #065f46;
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border-left: 3px solid var(--success);
 }
 
-/* DECRYPT BUTTON */
+/* DECRYPT BUTONU */
 .decrypt-btn {
-  background: var(--warning);
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background: transparent;
+  color: var(--warning);
+  border: 1px solid var(--warning);
+  padding: 8px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 600;
   font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 .decrypt-btn:hover {
-  background: #d97706;
+  background: var(--warning);
+  color: #000;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
 }

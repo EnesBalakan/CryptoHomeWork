@@ -7,6 +7,7 @@ import json
 import time
 import secrets
 
+# --- ALGORİTMA İMPORTLARI ---
 try:
     from algorithms.caesar import caesar_cipher, caesar_decrypt
     from algorithms.vigenere import vigenere_encrypt, vigenere_decrypt
@@ -25,10 +26,14 @@ try:
     from algorithms.des_manual import des_manual_encrypt, des_manual_decrypt
     from algorithms.rsa import generate_rsa_keypair, rsa_hybrid_encrypt, rsa_hybrid_decrypt
 except ImportError:
+    print("UYARI: Algoritma dosyaları bulunamadı veya eksik!")
     pass
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+
+# --- ÖNEMLİ DÜZELTME: CORS AYARI ---
+# React portun 3003, 3004, 3005 olsa bile hepsine otomatik izin verir.
+CORS(app, resources={r"/*": {"origins": r"^http://localhost:\d+$"}}, supports_credentials=True)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'chat.db')
@@ -37,12 +42,15 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 db = SQLAlchemy(app)
 
+
+# --- VERİTABANI MODELLERİ ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
     public_key = db.Column(db.Text, nullable=True)
     private_key = db.Column(db.Text, nullable=True)
+
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -56,9 +64,12 @@ class Message(db.Model):
     is_file = db.Column(db.Boolean, default=False)
     filename = db.Column(db.String(100), nullable=True)
 
+
 with app.app_context():
     db.create_all()
 
+
+# --- ŞİFRELEME YÖNETİCİSİ ---
 def run_encryption(method, text, action, **kwargs):
     shift = int(kwargs.get('shift', 3) or 3)
     key = kwargs.get('key', 'KEY')
@@ -68,66 +79,87 @@ def run_encryption(method, text, action, **kwargs):
     ro = int(kwargs.get('ro', 5) or 5)
     kontrol = kwargs.get('kontrol', True)
 
-    if method == "caesar":
-        return caesar_cipher(text, shift) if action == "encrypt" else caesar_decrypt(text, shift)
-    elif method == "vigenere":
-        return vigenere_encrypt(text, key) if action == "encrypt" else vigenere_decrypt(text, key)
-    elif method == "substitution":
-        return substitution_encrypt(text) if action == "encrypt" else substitution_decrypt(text)
-    elif method == "affine":
-        return affine_encrypt(text, a, b) if action == "encrypt" else affine_decrypt(text, a, b)
-    elif method == "railfence":
-        return rail_fence_cipher(text, x) if action == "encrypt" else railfence_decrypt(text, x)
-    elif method == "route":
-        return route_cipher(text, ro, kontrol) if action == "encrypt" else route_decrypt(text, ro, kontrol)
-    elif method == "columnar":
-        return columnar_encrypt(text, key) if action == "encrypt" else columnar_decrypt(text, key)
-    elif method == "polybius":
-        return polybius_encrypt(text) if action == "encrypt" else polybius_decrypt(text)
-    elif method == "pigpen":
-        return pigpen_encrypt(text) if action == "encrypt" else pigpen_decrypt(text)
-    elif method == "playfair":
-        return playfair_encrypt(text, key) if action == "encrypt" else playfair_decrypt(text, key)
-    elif method == "hill":
-        return hill_encrypt(text, key) if action == "encrypt" else hill_decrypt(text, key)
-    elif method == "vernam":
-        return vernam_encrypt(text, key) if action == "encrypt" else vernam_decrypt(text, key)
-    elif method == "aes_lib":
-        return aes_lib_encrypt(text, key) if action == "encrypt" else aes_lib_decrypt(text, key)
-    elif method == "aes_manual":
-        return aes_manual_encrypt(text, key) if action == "encrypt" else aes_manual_decrypt(text, key)
-    elif method == "des_manual":
-        return des_manual_encrypt(text, key) if action == "encrypt" else des_manual_decrypt(text, key)
+    try:
+        if method == "caesar":
+            return caesar_cipher(text, shift) if action == "encrypt" else caesar_decrypt(text, shift)
+        elif method == "vigenere":
+            return vigenere_encrypt(text, key) if action == "encrypt" else vigenere_decrypt(text, key)
+        elif method == "substitution":
+            return substitution_encrypt(text) if action == "encrypt" else substitution_decrypt(text)
+        elif method == "affine":
+            return affine_encrypt(text, a, b) if action == "encrypt" else affine_decrypt(text, a, b)
+        elif method == "railfence":
+            return rail_fence_cipher(text, x) if action == "encrypt" else railfence_decrypt(text, x)
+        elif method == "route":
+            return route_cipher(text, ro, kontrol) if action == "encrypt" else route_decrypt(text, ro, kontrol)
+        elif method == "columnar":
+            return columnar_encrypt(text, key) if action == "encrypt" else columnar_decrypt(text, key)
+        elif method == "polybius":
+            return polybius_encrypt(text) if action == "encrypt" else polybius_decrypt(text)
+        elif method == "pigpen":
+            return pigpen_encrypt(text) if action == "encrypt" else pigpen_decrypt(text)
+        elif method == "playfair":
+            return playfair_encrypt(text, key) if action == "encrypt" else playfair_decrypt(text, key)
+        elif method == "hill":
+            return hill_encrypt(text, key) if action == "encrypt" else hill_decrypt(text, key)
+        elif method == "vernam":
+            return vernam_encrypt(text, key) if action == "encrypt" else vernam_decrypt(text, key)
+        elif method == "aes_lib":
+            return aes_lib_encrypt(text, key) if action == "encrypt" else aes_lib_decrypt(text, key)
+        elif method == "aes_manual":
+            return aes_manual_encrypt(text, key) if action == "encrypt" else aes_manual_decrypt(text, key)
+        elif method == "des_manual":
+            return des_manual_encrypt(text, key) if action == "encrypt" else des_manual_decrypt(text, key)
+    except Exception as e:
+        print(f"Hata oluştu ({method}): {str(e)}")
+        return text  # Hata olursa metni olduğu gibi döndür
 
     return text
 
-@app.route('/register', methods=['POST'])
+
+# --- ENDPOINTLER (API URL'LERİ) ---
+
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
-    data = request.json
+    if request.method == 'OPTIONS': return jsonify({"msg": "ok"}), 200
+
+    data = request.json or {}
     username = data.get('username')
     password = data.get('password')
+
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Kullanıcı adı alınmış"}), 400
-    priv, pub = generate_rsa_keypair()
+
+    try:
+        priv, pub = generate_rsa_keypair()
+    except:
+        priv, pub = None, None
+
     new_user = User(username=username, password=password, public_key=pub, private_key=priv)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "Kayıt başarılı!"})
 
-@app.route('/login', methods=['POST'])
+
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    data = request.json
+    if request.method == 'OPTIONS': return jsonify({"msg": "ok"}), 200
+
+    data = request.json or {}
     user = User.query.filter_by(username=data.get('username'), password=data.get('password')).first()
     if user:
         return jsonify({"message": "Giriş başarılı", "user_id": user.id, "username": user.username})
     return jsonify({"error": "Hatalı giriş"}), 401
 
-@app.route('/send_message', methods=['POST'])
+
+@app.route('/send_message', methods=['POST', 'OPTIONS'])
 def send_message():
+    if request.method == 'OPTIONS': return jsonify({"msg": "ok"}), 200
+
     try:
         start_time = time.time()
 
-        data = request.json
+        data = request.json or {}
         sender = data.get('sender')
         receiver = data.get('receiver')
         text = data.get('text')
@@ -139,6 +171,7 @@ def send_message():
         if not recipient_user:
             return jsonify({"status": "error", "error": "Alıcı bulunamadı"}), 404
 
+        # Parametreleri al
         params = {
             'shift': data.get('shift'),
             'key': data.get('key'),
@@ -149,15 +182,20 @@ def send_message():
             'kontrol': data.get('kontrol')
         }
 
+        # RSA Hybrid kontrolü
         if method == "rsa_hybrid":
             if not recipient_user.public_key:
-                return jsonify({"status": "error", "error": "Public Key yok"}), 400
+                return jsonify({"status": "error", "error": "Alıcının Public Key'i yok"}), 400
             encrypted_text = rsa_hybrid_encrypt(text, recipient_user.public_key)
         else:
             encrypted_text = run_encryption(method, text, "encrypt", **params)
 
         duration = time.time() - start_time
 
+        # Veritabanına kaydederken güvenlik için parametrelerden 'key' bilgisini çıkarıyoruz
+        # (RSA hariç, simetrik şifrelemede anahtarı saklamazsak karşı taraf çözemez.
+        # Ancak normalde anahtar saklanmaz, kullanıcı girmelidir.
+        # Arkadaşının mantığında anahtar DB'ye kaydedilmiyor, mesajı okuyan kişi anahtarı bilmeli.)
         db_params = params.copy()
         db_params.pop('key', None)
 
@@ -178,10 +216,14 @@ def send_message():
         return jsonify({"status": "success", "time": duration})
 
     except Exception as e:
+        print(e)
         return jsonify({"status": "error", "error": str(e)}), 500
 
-@app.route('/get_inbox/<username>', methods=['GET'])
+
+@app.route('/get_inbox/<username>', methods=['GET', 'OPTIONS'])
 def get_inbox(username):
+    if request.method == 'OPTIONS': return jsonify({"msg": "ok"}), 200
+
     messages = Message.query.filter_by(receiver=username).order_by(Message.timestamp.desc()).all()
     return jsonify([
         {
@@ -189,7 +231,7 @@ def get_inbox(username):
             "sender": msg.sender,
             "content": msg.encrypted_content,
             "method": msg.method,
-            "params": msg.params,
+            "params": msg.params,  # String olarak gelir
             "timestamp": msg.timestamp.strftime("%H:%M"),
             "process_time": msg.process_time,
             "is_file": msg.is_file,
@@ -197,27 +239,38 @@ def get_inbox(username):
         } for msg in messages
     ])
 
-@app.route('/decrypt_message', methods=['POST'])
+
+@app.route('/decrypt_message', methods=['POST', 'OPTIONS'])
 def decrypt_message_endpoint():
+    if request.method == 'OPTIONS': return jsonify({"msg": "ok"}), 200
+
     try:
         start_time = time.time()
 
-        data = request.json
+        data = request.json or {}
         cipher_text = data.get('cipher_text')
         method = data.get('method')
-        user_key = data.get('key')
+        user_key = data.get('key')  # Kullanıcının input'a girdiği anahtar
         requesting_user = data.get('username')
+
+        decrypted_text = ""
 
         if method == "rsa_hybrid":
             user = User.query.filter_by(username=requesting_user).first()
             if not user or not user.private_key:
-                return jsonify({"error": "Private key yok"}), 400
+                return jsonify({"error": "Private key bulunamadı"}), 400
             decrypted_text = rsa_hybrid_decrypt(cipher_text, user.private_key)
         else:
+            # Diğer algoritmalar için veritabanındaki parametreleri (shift, a, b vb.) al
+            # Ama 'key' parametresini kullanıcının girdiği (user_key) ile değiştir.
             stored_params = data.get('params', {})
             if isinstance(stored_params, str):
-                stored_params = json.loads(stored_params)
-            stored_params['key'] = user_key
+                try:
+                    stored_params = json.loads(stored_params)
+                except:
+                    stored_params = {}
+
+            stored_params['key'] = user_key  # Kullanıcının girdiği şifreyi kullan
             decrypted_text = run_encryption(method, cipher_text, "decrypt", **stored_params)
 
         return jsonify({
@@ -226,8 +279,10 @@ def decrypt_message_endpoint():
             "time": time.time() - start_time
         })
 
-    except Exception:
-        return jsonify({"status": "error", "error": "Çözülemedi"}), 400
+    except Exception as e:
+        print(f"Decrypt hatası: {e}")
+        return jsonify({"status": "error", "error": "Şifre çözülemedi. Anahtar yanlış olabilir."}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
