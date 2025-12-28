@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Enes | React Uygulaması</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta
+      name="description"
+      content="Modern React teknolojileri ile geliştirilmiş örnek web uygulaması."
+    />
+    <meta name="author" content="Enes Balakan" />
+
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      }
+
+      .app-loading {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #1f2933;
+      }
+
+      .app-loading h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .app-loading p {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #4b5563;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      Bu uygulamayı çalıştırmak için tarayıcınızda JavaScript etkin olmalıdır.
+    </noscript>
+
+    <div id="root">
+      <!-- React yüklenene kadar görünen ekran -->
+      <div class="app-loading">
+        <h1>Uygulama Yükleniyor...</h1>
+        <p>Lütfen bekleyiniz</p>
+      </div>
+    </div>
+  </body>
+</html>
